@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dongxi.goods.dao.mapper.IUserDao">
+  <resultMap id="BaseResultMap" type="com.dongxi.goods.entity.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="user_status" jdbcType="INTEGER" property="userStatus" />
+    <result column="user_sex" jdbcType="INTEGER" property="userSex" />
+    <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+    <!-- 一对多 property:指实体类的属性名， ofType:指该属性对应的实体类的全路径 column:指该属性对应的表（t_user表）的外键-->
+<collection property="orders" ofType="com.dongxi.goods.entity.Order" column="user_id">
+  <id column="id" property="id" />
+  <result column="pament_id" property="pamentId" />
+  <result column="user_id" property="userId" />
+  <result column="user_biilId"  property="userBiilid" />
+  <result column="send_addr"  property="sendAddr" />
+  <result column="o_createtime"  property="oCreatetime" />
+  <result column="o_status"  property="oStatus" />
+  <result column="status" property="status" />
+  <result column="remark"  property="remark" />
+</collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, user_name, login_name, login_pwd, user_phone, user_address, user_status, 
+    user_sex, user_photo
+  </sql>
+  <!--查询用户-->
+  <select id="querySelective" parameterType="com.dongxi.goods.entity.User"  resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM  t_user
+    WHERE
+    <if test="userName != null">
+      user_name = #{userName,jdbcType=VARCHAR},
+    </if>
+    <if test="loginName != null">
+      login_name = #{loginName,jdbcType=VARCHAR},
+    </if>
+    <if test="loginPwd != null">
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+    </if>
+    <if test="userPhone != null">
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+    </if>
+    <if test="userAddress != null">
+      user_address = #{userAddress,jdbcType=VARCHAR},
+    </if>
+    <if test="userStatus != null">
+      user_status = #{userStatus,jdbcType=INTEGER},
+    </if>
+    <if test="userSex != null">
+      user_sex = #{userSex,jdbcType=INTEGER},
+    </if>
+    <if test="userPhoto != null">
+      user_photo = #{userPhoto,jdbcType=VARCHAR},
+    </if>
+  </select>
+  <!--模糊查询用户-->
+  <select id="selectByAnyWays" parameterType="String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  t_user
+    WHERE  CONCAT(`user_name`,`login_name`,`user_phone`,`user_sex`) LIKE "%"#{name}"%"
+  </select>
+  <!--通过登录名和密码查询用户-->
+  <select id="getUserBylogNameAndLogPwd" parameterType="com.dongxi.goods.entity.User"  resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM  t_user
+    WHERE     login_name = #{loginName,jdbcType=VARCHAR} AND  login_pwd = #{loginPwd,jdbcType=VARCHAR}
+  </select>
+  <!--查询用户所有-->
+  <select id="selectUserAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  t_user
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dongxi.goods.entity.User">
+    insert into t_user (user_id, user_name, login_name, 
+      login_pwd, user_phone, user_address, 
+      user_status, user_sex, user_photo
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
+      #{loginPwd,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR}, #{userAddress,jdbcType=VARCHAR}, 
+      #{userStatus,jdbcType=INTEGER}, #{userSex,jdbcType=INTEGER}, #{userPhoto,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongxi.goods.entity.User">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="loginPwd != null">
+        login_pwd,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="userAddress != null">
+        user_address,
+      </if>
+      <if test="userStatus != null">
+        user_status,
+      </if>
+      <if test="userSex != null">
+        user_sex,
+      </if>
+      <if test="userPhoto != null">
+        user_photo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null">
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userSex != null">
+        #{userSex,jdbcType=INTEGER},
+      </if>
+      <if test="userPhoto != null">
+        #{userPhoto,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongxi.goods.entity.User">
+    update t_user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null">
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        user_status = #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userSex != null">
+        user_sex = #{userSex,jdbcType=INTEGER},
+      </if>
+      <if test="userPhoto != null">
+        user_photo = #{userPhoto,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongxi.goods.entity.User">
+    update t_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      user_status = #{userStatus,jdbcType=INTEGER},
+      user_sex = #{userSex,jdbcType=INTEGER},
+      user_photo = #{userPhoto,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

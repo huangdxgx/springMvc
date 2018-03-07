@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dongxi.goods.dao.mapper.IOrderDao">
+  <resultMap id="BaseResultMap" type="com.dongxi.goods.entity.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pament_id" jdbcType="VARCHAR" property="pamentId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_biilId" jdbcType="VARCHAR" property="userBiilid" />
+    <result column="send_addr" jdbcType="VARCHAR" property="sendAddr" />
+    <result column="o_createtime" jdbcType="TIMESTAMP" property="oCreatetime" />
+    <result column="o_status" jdbcType="VARCHAR" property="oStatus" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <!-- 多对一  property:指实体类的属性名， javaType:指该属性对应的实体类的全路径 column:指该属性对应的表的外键-->
+    <association property="user" javaType="com.dongxi.goods.entity.User" >
+      <id property="userId" column="user_id"/>
+      <result column="user_name" property="userName" />
+      <result column="login_name" property="loginName" />
+      <result column="login_pwd"  property="loginPwd" />
+      <result column="user_phone"  property="userPhone" />
+      <result column="user_address"  property="userAddress" />
+      <result column="user_status" property="userStatus" />
+      <result column="user_sex"  property="userSex" />
+      <result column="user_photo"  property="userPhoto" />
+    </association>
+    <!-- 一对多 property:指实体类的属性名， ofType:指该属性对应的实体类的全路径 column:指该属性对应的表的外键-->
+    <collection property="saleItems" ofType="com.dongxi.goods.entity.SaleItem" column="s_id">
+      <id column="s_id"  property="sId" />
+      <result column="product_id"  property="productId" />
+      <result column="product_name"  property="productName" />
+      <result column="buy_number" property="buyNumber" />
+      <result column="price"  property="price" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pament_id, user_id, user_biilId, send_addr, o_createtime, o_status, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dongxi.goods.entity.Order">
+    insert into t_order (id, pament_id, user_id, 
+      user_biilId, send_addr, o_createtime, 
+      o_status, status, remark
+      )
+    values (#{id,jdbcType=INTEGER}, #{pamentId,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{userBiilid,jdbcType=VARCHAR}, #{sendAddr,jdbcType=VARCHAR}, #{oCreatetime,jdbcType=TIMESTAMP}, 
+      #{oStatus,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongxi.goods.entity.Order">
+    insert into t_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pamentId != null">
+        pament_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userBiilid != null">
+        user_biilId,
+      </if>
+      <if test="sendAddr != null">
+        send_addr,
+      </if>
+      <if test="oCreatetime != null">
+        o_createtime,
+      </if>
+      <if test="oStatus != null">
+        o_status,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pamentId != null">
+        #{pamentId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userBiilid != null">
+        #{userBiilid,jdbcType=VARCHAR},
+      </if>
+      <if test="sendAddr != null">
+        #{sendAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="oCreatetime != null">
+        #{oCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="oStatus != null">
+        #{oStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongxi.goods.entity.Order">
+    update t_order
+    <set>
+      <if test="pamentId != null">
+        pament_id = #{pamentId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userBiilid != null">
+        user_biilId = #{userBiilid,jdbcType=VARCHAR},
+      </if>
+      <if test="sendAddr != null">
+        send_addr = #{sendAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="oCreatetime != null">
+        o_createtime = #{oCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="oStatus != null">
+        o_status = #{oStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongxi.goods.entity.Order">
+    update t_order
+    set pament_id = #{pamentId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      user_biilId = #{userBiilid,jdbcType=VARCHAR},
+      send_addr = #{sendAddr,jdbcType=VARCHAR},
+      o_createtime = #{oCreatetime,jdbcType=TIMESTAMP},
+      o_status = #{oStatus,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

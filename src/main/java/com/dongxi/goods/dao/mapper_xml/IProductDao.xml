@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dongxi.goods.dao.mapper.IProductDao">
+  <resultMap id="BaseResultMap" type="com.dongxi.goods.entity.Product">
+    <id column="p_id" jdbcType="INTEGER" property="pId" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+    <result column="p_description" jdbcType="VARCHAR" property="pDescription" />
+    <result column="p_memberPrice" jdbcType="DOUBLE" property="pMemberprice" />
+    <result column="p_price" jdbcType="DOUBLE" property="pPrice" />
+    <result column="p_stock" jdbcType="INTEGER" property="pStock" />
+    <result column="c_id" jdbcType="INTEGER" property="cId" />
+    <result column="p_filename" jdbcType="VARCHAR" property="pFilename" />
+    <result column="p_createTiem" jdbcType="TIMESTAMP" property="pCreatetiem" />
+    <!-- 商品信息和分类的多对一：  property:指实体类的属性名， javaType:指该属性对应的实体类的全路径 column:指该属性对应的表的外键-->
+    <association property="category" javaType="com.dongxi.goods.entity.Category">
+      <id column="c_id" property="cId" />
+      <result column="c_name"  property="cName" />
+    </association>
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    p_id, p_name, p_description, p_memberPrice, p_price, p_stock, c_id, p_filename, p_createTiem
+  </sql>
+<!--查询商品所有-->
+  <select id="selectProductAll" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    t_product
+  </select>
+  <!--查询最新上架商品-->
+  <select id="getNewProductlist"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include  refid="Base_Column_List" />
+    FROM  t_product
+    ORDER BY p_createTiem DESC
+    <if test="num != null">
+      LIMIT #{num}
+    </if>
+  </select>
+  <!--模糊查询商品-->
+  <select id="getProductlistBycase" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+    <include  refid="Base_Column_List" />
+    FROM  t_product
+    WHERE CONCAT (`p_name`,`p_description`)  LIKE  "%"#{name}"%" AND `c_id`=#{categoryId}
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product
+    where p_id = #{pId,jdbcType=INTEGER}
+  </select>
+  <!--多条件查询商品信息-->
+  <select id="querySelective" parameterType="com.dongxi.goods.entity.Product" resultMap="BaseResultMap">
+    SELECT
+    <include  refid="Base_Column_List" />
+    FROM  t_product
+    WHERE
+    <if test="pName != null">
+      p_name = #{pName,jdbcType=VARCHAR},
+    </if>
+    <if test="pDescription != null">
+      p_description = #{pDescription,jdbcType=VARCHAR},
+    </if>
+    <if test="pMemberprice != null">
+      p_memberPrice = #{pMemberprice,jdbcType=DOUBLE},
+    </if>
+    <if test="pPrice != null">
+      p_price = #{pPrice,jdbcType=DOUBLE},
+    </if>
+    <if test="pStock != null">
+      p_stock = #{pStock,jdbcType=INTEGER},
+    </if>
+    <if test="cId != null">
+      c_id = #{cId,jdbcType=INTEGER},
+    </if>
+    <if test="pFilename != null">
+      p_filename = #{pFilename,jdbcType=VARCHAR},
+    </if>
+    <if test="pCreatetiem != null">
+      p_createTiem = #{pCreatetiem,jdbcType=TIMESTAMP}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_product
+    where p_id = #{pId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dongxi.goods.entity.Product">
+    insert into t_product (p_id, p_name, p_description, 
+      p_memberPrice, p_price, p_stock, 
+      c_id, p_filename, p_createTiem
+      )
+    values (#{pId,jdbcType=INTEGER}, #{pName,jdbcType=VARCHAR}, #{pDescription,jdbcType=VARCHAR}, 
+      #{pMemberprice,jdbcType=DOUBLE}, #{pPrice,jdbcType=DOUBLE}, #{pStock,jdbcType=INTEGER}, 
+      #{cId,jdbcType=INTEGER}, #{pFilename,jdbcType=VARCHAR}, #{pCreatetiem,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongxi.goods.entity.Product">
+    insert into t_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pId != null">
+        p_id,
+      </if>
+      <if test="pName != null">
+        p_name,
+      </if>
+      <if test="pDescription != null">
+        p_description,
+      </if>
+      <if test="pMemberprice != null">
+        p_memberPrice,
+      </if>
+      <if test="pPrice != null">
+        p_price,
+      </if>
+      <if test="pStock != null">
+        p_stock,
+      </if>
+      <if test="cId != null">
+        c_id,
+      </if>
+      <if test="pFilename != null">
+        p_filename,
+      </if>
+      <if test="pCreatetiem != null">
+        p_createTiem,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pId != null">
+        #{pId,jdbcType=INTEGER},
+      </if>
+      <if test="pName != null">
+        #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="pDescription != null">
+        #{pDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="pMemberprice != null">
+        #{pMemberprice,jdbcType=DOUBLE},
+      </if>
+      <if test="pPrice != null">
+        #{pPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="pStock != null">
+        #{pStock,jdbcType=INTEGER},
+      </if>
+      <if test="cId != null">
+        #{cId,jdbcType=INTEGER},
+      </if>
+      <if test="pFilename != null">
+        #{pFilename,jdbcType=VARCHAR},
+      </if>
+      <if test="pCreatetiem != null">
+        #{pCreatetiem,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongxi.goods.entity.Product">
+    update t_product
+    <set>
+      <if test="pName != null">
+        p_name = #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="pDescription != null">
+        p_description = #{pDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="pMemberprice != null">
+        p_memberPrice = #{pMemberprice,jdbcType=DOUBLE},
+      </if>
+      <if test="pPrice != null">
+        p_price = #{pPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="pStock != null">
+        p_stock = #{pStock,jdbcType=INTEGER},
+      </if>
+      <if test="cId != null">
+        c_id = #{cId,jdbcType=INTEGER},
+      </if>
+      <if test="pFilename != null">
+        p_filename = #{pFilename,jdbcType=VARCHAR},
+      </if>
+      <if test="pCreatetiem != null">
+        p_createTiem = #{pCreatetiem,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where p_id = #{pId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongxi.goods.entity.Product">
+    update t_product
+    set p_name = #{pName,jdbcType=VARCHAR},
+      p_description = #{pDescription,jdbcType=VARCHAR},
+      p_memberPrice = #{pMemberprice,jdbcType=DOUBLE},
+      p_price = #{pPrice,jdbcType=DOUBLE},
+      p_stock = #{pStock,jdbcType=INTEGER},
+      c_id = #{cId,jdbcType=INTEGER},
+      p_filename = #{pFilename,jdbcType=VARCHAR},
+      p_createTiem = #{pCreatetiem,jdbcType=TIMESTAMP}
+    where p_id = #{pId,jdbcType=INTEGER}
+  </update>
+</mapper>

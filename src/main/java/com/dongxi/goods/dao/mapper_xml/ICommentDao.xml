@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dongxi.goods.dao.mapper.ICommentDao">
+  <resultMap id="BaseResultMap" type="com.dongxi.goods.entity.Comment">
+    <id column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="comment_content" jdbcType="VARCHAR" property="commentContent" />
+    <result column="commonent_time" jdbcType="VARCHAR" property="commonentTime" />
+    <result column="commonent_reply" jdbcType="VARCHAR" property="commonentReply" />
+    <result column="commonent_replytime" jdbcType="VARCHAR" property="commonentReplytime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <!--用户留言：一对一配置-->
+    <association property="user" javaType="com.dongxi.goods.entity.User">
+      <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    comment_id, comment_content, commonent_time, commonent_reply, commonent_replytime, 
+    user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_comment
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_comment
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dongxi.goods.entity.Comment">
+    insert into t_comment (comment_id, comment_content, commonent_time, 
+      commonent_reply, commonent_replytime, user_id
+      )
+    values (#{commentId,jdbcType=INTEGER}, #{commentContent,jdbcType=VARCHAR}, #{commonentTime,jdbcType=VARCHAR}, 
+      #{commonentReply,jdbcType=VARCHAR}, #{commonentReplytime,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongxi.goods.entity.Comment">
+    insert into t_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="commentContent != null">
+        comment_content,
+      </if>
+      <if test="commonentTime != null">
+        commonent_time,
+      </if>
+      <if test="commonentReply != null">
+        commonent_reply,
+      </if>
+      <if test="commonentReplytime != null">
+        commonent_replytime,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentContent != null">
+        #{commentContent,jdbcType=VARCHAR},
+      </if>
+      <if test="commonentTime != null">
+        #{commonentTime,jdbcType=VARCHAR},
+      </if>
+      <if test="commonentReply != null">
+        #{commonentReply,jdbcType=VARCHAR},
+      </if>
+      <if test="commonentReplytime != null">
+        #{commonentReplytime,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongxi.goods.entity.Comment">
+    update t_comment
+    <set>
+      <if test="commentContent != null">
+        comment_content = #{commentContent,jdbcType=VARCHAR},
+      </if>
+      <if test="commonentTime != null">
+        commonent_time = #{commonentTime,jdbcType=VARCHAR},
+      </if>
+      <if test="commonentReply != null">
+        commonent_reply = #{commonentReply,jdbcType=VARCHAR},
+      </if>
+      <if test="commonentReplytime != null">
+        commonent_replytime = #{commonentReplytime,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongxi.goods.entity.Comment">
+    update t_comment
+    set comment_content = #{commentContent,jdbcType=VARCHAR},
+      commonent_time = #{commonentTime,jdbcType=VARCHAR},
+      commonent_reply = #{commonentReply,jdbcType=VARCHAR},
+      commonent_replytime = #{commonentReplytime,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+</mapper>
