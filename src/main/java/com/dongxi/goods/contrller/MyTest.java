@@ -14,6 +14,7 @@ public class MyTest {
         User user = new User();
         user.setUserId(1);
         user.setUserAddress("南宁");
+        user.setUserPhone("18778989157");
     }
 }
 
