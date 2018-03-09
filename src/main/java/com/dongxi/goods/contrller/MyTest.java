@@ -16,6 +16,7 @@ public class MyTest {
         user.setUserAddress("南宁");
         user.setUserPhone("18778989157");
         user.setLoginPwd("123456");
+        user.setLoginName("dongxi");
     }
 }
 
