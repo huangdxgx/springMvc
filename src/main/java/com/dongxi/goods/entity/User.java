@@ -22,7 +22,7 @@ public class User implements Serializable{
 
     private Integer userStatus;
 
-    private Integer userSex;
+    private Integer userSex;//性别
 
     private String userPhoto;
 
